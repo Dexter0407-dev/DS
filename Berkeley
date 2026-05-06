@@ -1,0 +1,85 @@
+server.py
+import socket
+import threading
+import datetime
+
+clients = []
+
+# Function for each client
+def handle_client(conn):
+
+    while True:
+
+        # Receive client time
+        client_time = conn.recv(1024).decode()
+
+        print("Client Time:", client_time)
+
+        # Server current time
+        server_time = datetime.datetime.now()
+
+        # Convert client time to datetime
+        client_time = datetime.datetime.fromisoformat(client_time)
+
+        # Calculate average time
+        avg_time = server_time + (client_time - server_time) / 2
+
+        # Send synchronized time
+        conn.send(str(avg_time).encode())
+
+        print("Synchronized Time Sent:", avg_time)
+
+
+# Create server
+server = socket.socket()
+
+server.bind(("localhost", 8080))
+
+server.listen(5)
+
+print("Server Started...\n")
+
+while True:
+
+    # Accept client
+    conn, addr = server.accept()
+
+    print("Client Connected:", addr)
+
+    # Start thread
+    threading.Thread(target=handle_client, args=(conn,)).start()
+
+
+client.py
+import socket
+import datetime
+import time
+
+# Create client socket
+client = socket.socket()
+
+# Connect to server
+client.connect(("localhost", 8080))
+
+while True:
+
+    # Current client time
+    current_time = str(datetime.datetime.now())
+
+    # Send time to server
+    client.send(current_time.encode())
+
+    print("Client Time:", current_time)
+
+    # Receive synchronized time
+    sync_time = client.recv(1024).decode()
+
+    print("Synchronized Time:", sync_time)
+
+    print("----------------------")
+
+    time.sleep(5)
+
+steps:
+python3 server.py (Ter 1)
+python3 client.py (Ter 2)
