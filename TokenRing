@@ -1,0 +1,65 @@
+import java.util.Scanner;
+
+class TokenRing {
+    //Function to display ring
+    static void displayRing (int n) {
+        System.out.print("Ring: ");
+        for (int i = 0; i < n; i++) {
+            System.out.print(i + "->");
+        }
+        System.out.print("0");
+    }
+    
+    //Function to process token passing
+    static void processToken(int n, boolean[] wantsCS) {
+        int token = 0; //starts from node 0
+        System.out.println("\n----Token Ring Execution----");
+        
+        for(int round = 0; round < n; round++) {
+            int current = (token + round) % n;
+            System.out.println("\n Token at node" + current);
+            
+            if ( wantsCS[current] ) {
+                System.out.println("Node " + current + " Enters Critical Section");
+                System.out.println("Node " + current + " Executing.....");
+                System.out.println("Node " + current + " Exits Critical Section");
+                
+                wantsCS[current] = false; //done
+            
+            } else {
+                int next = (current + 1) % n;
+                System.out.println("Node " + current + " passes token to Node" + next);
+            }
+        }
+        
+        System.out.println("\nAll nodes processed (1 round complete)");
+    }
+    
+    public static void main (String[] args) {
+        
+        Scanner sc = new Scanner(System.in);
+        
+        //Input number of nodes
+        System.out.print("Enter the number of nodes: ");
+        int n = sc.nextInt();
+        
+        boolean[] wantsCS = new boolean[n];
+        
+        //Input CS requests
+        System.out.println("\nEnter 1 if node wants CS, else 0: ");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Node " + i + ": ");
+            wantsCS[i] = sc.nextInt() == 1;
+        }
+        
+        //Show Ring
+        displayRing(n);
+        
+        //Start token process
+        processToken(n, wantsCS);
+        
+        sc.close();
+    }
+}
+                
+    
